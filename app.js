@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-  User.findById('651470244324022515938860')
+  User.findById('6522e1c4e666a303382cc179')
     .then(user => {
       req.user = user;
       next();
@@ -34,14 +34,19 @@ app.use(errorController.get404);
 
 mongoose.connect('mongodb+srv://r4ghuveer:r4ghuveer@cluster0.orx5fjp.mongodb.net/shop')
         .then(result =>{
-            const user = new User({
-                name : 'Raghuveer',
-                email : 'raghuveerofficial08@gmail.com',
-                cart : {
-                    items: []
-                } 
-            })
-            user.save();
+            User.findOne().then(user =>{
+                if (!user){
+
+                    const user = new User({
+                        name : 'Raghuveer',
+                        email : 'raghuveerofficial08@gmail.com',
+                        cart : {
+                            items: []
+                        } 
+                    })
+                    user.save();
+                }
+            });
             app.listen(3000);
             console.log('connected')
         }).catch(err => console.log(err))

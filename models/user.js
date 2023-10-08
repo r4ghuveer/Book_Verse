@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+const mongoose = require ('mongoose');
+const Schema = mongoose.Schema;
 const userSchema = mongoose.Schema({
     name : {
         type : String,
@@ -12,14 +13,14 @@ const userSchema = mongoose.Schema({
         items :[{
             productId: {
                 type : Schema.Types.ObjectId,
-                requiterd : true
+                required : true,
+                ref : 'Product'
             },
             quantity :{
                 type : Number,
                 required : true
             }
         }],
-        required : true
     },
     name : {
         type : String,
