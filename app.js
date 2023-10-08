@@ -20,7 +20,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use((req, res, next) => {
   User.findById('651470244324022515938860')
     .then(user => {
-      req.user = new User(user.name, user.email, user.cart, user._id);
+      req.user = user;
       next();
     })
     .catch(err => console.log(err));
@@ -32,8 +32,16 @@ app.use(shopRoutes);
 app.use(errorController.get404);
 
 
-mongoose.connect('mongodb+srv://r4ghuveer:r4ghuveer@cluster0.orx5fjp.mongodb.net/')
+mongoose.connect('mongodb+srv://r4ghuveer:r4ghuveer@cluster0.orx5fjp.mongodb.net/shop')
         .then(result =>{
+            const user = new User({
+                name : 'Raghuveer',
+                email : 'raghuveerofficial08@gmail.com',
+                cart : {
+                    items: []
+                } 
+            })
+            user.save();
             app.listen(3000);
             console.log('connected')
         }).catch(err => console.log(err))
