@@ -43,9 +43,8 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
-  req.user
-    populate('cart.items.productId')
-    .execPopulate()
+  req.user 
+    .populate('cart.items.productId')
         .then(user => {
             const products=user.cart.items;
             res.render('shop/cart', {
@@ -81,9 +80,8 @@ exports.postCartDeleteProduct = (req, res, next) => {
 
 exports.postOrder = (req, res, next) => {
 
-  req.user
+  req.user 
     populate('cart.items.productId')
-    .execPopulate()
         .then(user => {
             const products=user.cart.items.map(i=>{
                 return {
@@ -101,8 +99,6 @@ exports.postOrder = (req, res, next) => {
             });
             order.save();
         })
-  req.user
-    .addOrder()
     .then(result => {
       res.redirect('/orders');
     })
