@@ -1,6 +1,6 @@
 const mongoose = require ('mongoose');
 const Schema = mongoose.Schema;
-const userSchema = mongoose.Schema({
+const userSchema = new Schema({
     name : {
         type : String,
         required : true
@@ -20,13 +20,9 @@ const userSchema = mongoose.Schema({
                 type : Number,
                 required : true
             }
-        }],
-    },
-    name : {
-        type : String,
-        required : true
+        }]
     }
-})
+});
 
 userSchema.methods.addToCart = function (product) {
     const cartProductIndex = this.cart.items.findIndex(cp => {
