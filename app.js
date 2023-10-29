@@ -10,7 +10,7 @@ const errorController = require('./controllers/error');
 const User = require('./models/user');
 
 const MONGODB_URI =
-  'mongodb+srv://r4ghuveer:r4ghuveer@cluster0.orx5fjp.mongodb.net/shop';
+  'mongodb+srv://r4ghuveer:r4ghuveer@cluster0.orx5fjp.mongodb.net/shop ';
 
 const app = express();
 const store = new MongoDBStore({
@@ -60,8 +60,8 @@ mongoose
     User.findOne().then(user => {
       if (!user) {
         const user = new User({
-          name: 'Raghuveer',
-          email: 'raghuveer@test.com',
+          name: 'Max',
+          email: 'max@test.com',
           cart: {
             items: []
           }
@@ -70,9 +70,7 @@ mongoose
       }
     });
     app.listen(3000);
-    console.log('connected !')
   })
   .catch(err => {
     console.log(err);
   });
-
