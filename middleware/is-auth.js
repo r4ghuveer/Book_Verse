@@ -4,3 +4,4 @@ module.exports=(req,res,next)=>{
     }
     next();
 }
+// now we remove all the req.session.isLoggedIn from the controller actions

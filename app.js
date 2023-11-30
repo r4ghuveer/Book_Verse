@@ -5,14 +5,14 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
+const flash = require('connect-flash');
 
-const csrfProtection = csrf();
 
 const errorController = require('./controllers/error');
 const User = require('./models/user');
 
 const MONGODB_URI =
-  'mongodb+srv://r4ghuveer:r4ghuveer@cluster0.orx5fjp.mongodb.net/shop ';
+  'mongodb+srv://r4ghuveer:raghuveer@cluster0.orx5fjp.mongodb.net/shop ';
 
 const app = express();
 const store = new MongoDBStore({
@@ -51,6 +51,11 @@ app.use((req, res, next) => {
     .catch(err => console.log(err));
 });
 
+app.use((req,res,next)=>{
+    res.locals.isAuthenticated = req.session.isLoggedIn;
+    next();
+})
+app.use(flash());
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
