@@ -75,6 +75,7 @@ exports.postSignup = (req, res, next) => {
     })
     
     .then(result => {
+        res.redirect('/login');
         mg.messages.create(process.env.MAILGUN_DOMAIN, {
             from: "Book Verse <postmaster@sandbox684be0426ff94ba99422cd12469d74ba.mailgun.org>",
             to: [email],
@@ -84,7 +85,6 @@ exports.postSignup = (req, res, next) => {
         })
             .then(msg => console.log(msg)) // logs response data
             .catch(err => console.log(err)); 
-        res.redirect('/login');
     })
     })
     .catch(err => console.log(err));
