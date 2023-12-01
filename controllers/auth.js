@@ -1,6 +1,11 @@
 const User = require('../models/user');
+require('dotenv').config();
 const bcrypt = require('bcryptjs');
-
+const formData = require('form-data');
+const Mailgun = require('mailgun.js');
+const mailgun = new Mailgun(formData);
+const apiKey = process.env.MAILGUN_API_KEY;
+const mg = mailgun.client({username: 'api', key: apiKey || 'key-yourkeyhere'});
 
 exports.getLogin = (req, res, next) => {
   res.render('auth/login', {
@@ -70,6 +75,15 @@ exports.postSignup = (req, res, next) => {
     })
     
     .then(result => {
+        mg.messages.create(process.env.MAILGUN_DOMAIN, {
+            from: "Book Verse <postmaster@sandbox684be0426ff94ba99422cd12469d74ba.mailgun.org>",
+            to: [email],
+            subject: "Confirmation",
+            text: "You have sign up for BookVerse",
+            html: "<h1> Congratulation! </h1>"
+        })
+            .then(msg => console.log(msg)) // logs response data
+            .catch(err => console.log(err)); 
         res.redirect('/login');
     })
     })

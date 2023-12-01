@@ -6,13 +6,13 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const flash = require('connect-flash');
+require('dotenv').config();
 
 
 const errorController = require('./controllers/error');
 const User = require('./models/user');
 
-const MONGODB_URI =
-  'mongodb+srv://r4ghuveer:raghuveer@cluster0.orx5fjp.mongodb.net/shop ';
+const MONGODB_URI = process.env.mongodb_uri;
 
 const app = express();
 const store = new MongoDBStore({
