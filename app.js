@@ -8,7 +8,6 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 const flash = require('connect-flash');
 require('dotenv').config();
 
-
 const errorController = require('./controllers/error');
 const User = require('./models/user');
 
