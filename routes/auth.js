@@ -12,18 +12,21 @@ router.get('/signup', authController.getSignup);
 
 router.post('/login', authController.postLogin);
 
-router.post('/signup',[ check('email').isEmail().withMessage('Please enter a valid email')
-    .custom((value,{req})=> {
-    if(value === "test@test.com"){
-        throw new Error('This email address is forbidden.')
-    }
-    return true; 
-}),
-    body('password',
-        'Please enter a passowrd with only numbers and text and 5 length.'
-    ).isLength({min: 5})
-    .isAlphanumeric()
-]
+router.post('/signup',
+    [ check('email')
+        .isEmail()
+        .withMessage('Please enter a valid email')
+        .custom((value,{req})=> {
+            if(value === "test@test.com"){
+                throw new Error('This email address is forbidden.')
+            }
+            return true; 
+        }),
+        body('password',
+            'Please enter a passowrd with only numbers and text and 5 length.'
+        ).isLength({min: 5})
+        .isAlphanumeric()
+    ]
     , authController.postSignup);
 
 router.post('/logout', authController.postLogout);
