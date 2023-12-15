@@ -24,18 +24,18 @@ exports.getLogin = (req, res, next) => {
 };
 
 exports.getSignup = (req, res, next) => {
-  res.render('auth/signup', {
-    path: '/signup',
-    pageTitle: 'Signup',
-    isAuthenticated: false,
-    errorMessage: req.flash('error'),
-      oldInput: {
-          email: '',
-          password: '',
-          confirmPassword: ''
-      },
-      validationErrors: []
-  });
+    res.render('auth/signup', {
+        path: '/signup',
+        pageTitle: 'Signup',
+        isAuthenticated: false,
+        errorMessage: req.flash('error'),
+        oldInput: {
+            email: '',
+            password: '',
+            confirmPassword: ''
+        },
+        validationErrors: []
+    });
 };
 
 exports.postLogin = (req, res, next) => {
@@ -53,7 +53,7 @@ exports.postLogin = (req, res, next) => {
                 password: password
             },
             validationErrors : errors.array()
-            
+
         })
     }
     User.findOne({email : email})
@@ -96,7 +96,11 @@ exports.postLogin = (req, res, next) => {
                     res.redirect('/login');
                 });
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            const error  = new Error(err);
+            error.httpStatusCode=500;
+            return next(error);
+        });
 };
 
 exports.postSignup = (req, res, next) => {
@@ -124,37 +128,41 @@ exports.postSignup = (req, res, next) => {
             });
             return user.save();
         })
-    
-    .then(result => {
-        res.redirect('/login');
-        mg.messages.create(process.env.MAILGUN_DOMAIN, {
-            from: "Book Verse <postmaster@sandbox684be0426ff94ba99422cd12469d74ba.mailgun.org>",
-            to: [email],
-            subject: "Confirmation",
-            text: "You have sign up for BookVerse",
-            html: "<h1> Congratulation! </h1>"
+
+        .then(result => {
+            res.redirect('/login');
+            mg.messages.create(process.env.MAILGUN_DOMAIN, {
+                from: "Book Verse <postmaster@sandbox684be0426ff94ba99422cd12469d74ba.mailgun.org>",
+                to: [email],
+                subject: "Confirmation",
+                text: "You have sign up for BookVerse",
+                html: "<h1> Congratulation! </h1>"
+            })
+                .then(msg => console.log(msg)) // logs response data
+                .catch(err => {
+                    const error  = new Error(err);
+                    error.httpStatusCode=500;
+                    return next(error);
+                });
         })
-            .then(msg => console.log(msg)) // logs response data
-            .catch(err => console.log(err)); 
-    })
-        
+
 };
 
 exports.postLogout = (req, res, next) => {
-  req.session.destroy(err => {
-    console.log(err);
-    res.redirect('/');
-  });
+    req.session.destroy(err => {
+        console.log(err);
+        res.redirect('/');
+    });
 };
 
 exports.getReset = (req,res,next)=>{
 
-  res.render('auth/reset', {
-    path: '/reset',
-    pageTitle: 'Reset Password',
-    isAuthenticated: false,
-    errorMessage: req.flash('error')
-  });
+    res.render('auth/reset', {
+        path: '/reset',
+        pageTitle: 'Reset Password',
+        isAuthenticated: false,
+        errorMessage: req.flash('error')
+    });
 }
 exports.postReset = (req,res,next)=>{
     crypto.randomBytes(32,(err,buffer)=>{
@@ -185,13 +193,19 @@ exports.postReset = (req,res,next)=>{
                     <p> Click this <a href="http://localhost:3000/reset/${token}">link</a> to set a new password. </p>                    `
                 })
                     .then(msg => console.log(msg)) // logs response data
-                    .catch(err => console.log(err)); 
+                    .catch(err => {
+                        const error  = new Error(err);
+                        error.httpStatusCode=500;
+                        return next(error);
+                    });
 
-                
+
             })
-            .catch(err =>{
-                console.log(err)
-            })
+            .catch(err => {
+                const error  = new Error(err);
+                error.httpStatusCode=500;
+                return next(error);
+            });
     })
 }
 exports.getNewPassword = (req,res,next)=>{
@@ -206,9 +220,11 @@ exports.getNewPassword = (req,res,next)=>{
                 passwordToken: token
             });
         })
-        .catch(err =>{
-            console.log(err)
-        })
+        .catch(err => {
+            const error  = new Error(err);
+            error.httpStatusCode=500;
+            return next(error);
+        });
 }
 exports.postNewPassword = (req,res,next)=>{
     const newPassword = req.body.password;
@@ -218,18 +234,20 @@ exports.postNewPassword = (req,res,next)=>{
     User.findOne({resetToken: passwordToken, resetTokenExpiration :{$gt: Date.now()}, _id: userId}).then(user=>{
         resetUser=user;
         return bcrypt.hash(newPassword,12);
-        
+
     })
-    .then(hashedPassword=>{
-        resetUser.password=hashedPassword;
-        resetUser.resetToken=undefined;
-        resetUser.resetTokenExpiration=undefined;
-        return resetUser.save();
-    })
-    .then(result=>{
-        res.redirect('/login');
-    })
-    .catch(err=>{
-        console.log(err);
-    });
+        .then(hashedPassword=>{
+            resetUser.password=hashedPassword;
+            resetUser.resetToken=undefined;
+            resetUser.resetTokenExpiration=undefined;
+            return resetUser.save();
+        })
+        .then(result=>{
+            res.redirect('/login');
+        })
+        .catch(err => {
+            const error  = new Error(err);
+            error.httpStatusCode=500;
+            return next(error);
+        });
 }
