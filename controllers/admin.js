@@ -19,38 +19,37 @@ exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
     if(!image){
-        console.log('comes here');
         return res.status(422).render('admin/edit-product', {
-        pageTitle: 'Add Product',
-        path: '/admin/add-product',
-        editing: false,
-          hasError: true,
-        product: {
-            title: title,
-            price: price,
-            description: description
-        },
-        isAuthenticated: req.session.isLoggedIn,
-          errorMessage: 'Attached file is not an image.', 
-          validationErrors : [] 
-      });
+            pageTitle: 'Add Product',
+            path: '/admin/add-product',
+            editing: false,
+            hasError: true,
+            product: {
+                title: title,
+                price: price,
+                description: description
+            },
+            isAuthenticated: req.session.isLoggedIn,
+            errorMessage: 'Attached file is not an image.', 
+            validationErrors : [] 
+        });
     }
     const errors=validationResult(req);
     if(!errors.isEmpty()){
         console.log('error');
 
       return res.status(422).render('admin/edit-product', {
-        pageTitle: 'Add Product',
-        path: '/admin/add-product',
-        editing: false,
+          pageTitle: 'Add Product',
+          path: '/admin/add-product',
+          editing: false,
           hasError: true,
-        product: {
-            title: title,
-            price: price,
-            imageUrl: imageUrl,
-            description: description
-        },
-        isAuthenticated: req.session.isLoggedIn,
+          product: {
+              title: title,
+              price: price,
+              imageUrl: imageUrl,
+              description: description
+          },
+          isAuthenticated: req.session.isLoggedIn,
           errorMessage:  errors.array()[0].msg,
           validationErrors : errors.array()
       });
