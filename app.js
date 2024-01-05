@@ -16,6 +16,7 @@ const User = require('./models/user');
 const MONGODB_URI = process.env.mongodb_uri;
 
 const app = express();
+
 const store = new MongoDBStore({
   uri: MONGODB_URI,
   collection: 'sessions'
