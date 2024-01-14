@@ -139,7 +139,7 @@ exports.getCheckout = (req,res,next) =>{
                 total += p.quantity * p.productId.price;
             })
             res.render('shop/checkout', {
-                path: '/checktout',
+                path: '/checkout',
                 pageTitle: 'Checkout',
                 products: products,
                 totalSum: total, 
