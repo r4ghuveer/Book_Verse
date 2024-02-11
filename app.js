@@ -1,13 +1,16 @@
 const path = require('path');
-const csrf = require('csurf');
+const https = require('https');
+const fs=require('fs');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
+const helmet = require('helmet');
 const flash = require('connect-flash');
 require('dotenv').config();
 const multer = require('multer');
+const compression = require('compression');
 
 const errorController = require('./controllers/error');
 
@@ -21,6 +24,11 @@ const store = new MongoDBStore({
   uri: MONGODB_URI,
   collection: 'sessions'
 });
+
+console.log(process.env.NODE_ENV);
+
+const privateKey = fs.readFileSync('server.key');
+const certificate = fs.readFileSync('server.cert');
 
 const fileStorage = multer.diskStorage({
     destination: (req,file,cb)=>{
@@ -46,6 +54,10 @@ app.set('views', 'views');
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
+
+
+app.use(helmet());
+app.use(compression());
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -106,7 +118,8 @@ app.use((error,req,res,next)=>{
 mongoose
   .connect(MONGODB_URI)
   .then(result => {
-    app.listen(3000);
+    // https.createServer({key: privateKey, cert: certificate},app).listen(process.env.PORT || 3000);
+      app.listen(process.env.PORT || 3000);
       console.log("connected to database!!");
   })
   .catch(err => {
